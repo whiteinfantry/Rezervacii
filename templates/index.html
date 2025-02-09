@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Систем за резервации</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <style>
+        table { width: 100%; border-collapse: collapse; }
+        th, td { border: 1px solid black; text-align: center; padding: 10px; }
+        .occupied { background-color: red !important; color: white; }
+        .awaiting { background-color: yellow !important; color: black; }
+        #prevDay, #nextDay { display: none !important; }
+        #prevWeek, #nextWeek { display: inline-block !important; }
+        #singleDay { display: none !important; }
+        .adminStuff{ display:none; }
+    </style>
+</head>
+<body class="container mt-4">
+    <h1 class="text-center">Преглед на Резервации</h1>
+    <h1 class="isAdmin">Berber!</h1>
+
+    <div class="d-flex justify-content-between mb-2">
+        <button id="prevWeek" class="btn btn-primary">Претходна недела</button>
+        <button id="nextWeek" class="btn btn-primary">Следна недела</button>
+    </div>
+
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Време</th>
+                <th id="day1"></th>
+                <th id="day2"></th>
+                <th id="day3"></th>
+                <th id="day4"></th>
+                <th id="day5"></th>
+                <th id="day6"></th>
+                <th id="day7"></th>
+                <th id="singleDay" colspan="7" class="d-block"></th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- Time Slots -->
+            <tr><td>08:00</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+            <tr><td>09:00</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+            <tr><td>10:00</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+            <tr><td>11:00</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+            <tr><td>12:00</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+            <tr><td>13:00</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+            <tr><td>14:00</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+            <tr><td>15:00</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+            <tr><td>16:00</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+            <tr><td>17:00</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+            <tr><td>18:00</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+            <tr><td>19:00</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+        </tbody>
+    </table>Време
+
+<!-- ovoa tuka treba da e hidden za ne-berber-->
+<div id="proposed-times-container" style="display: none;">
+    <h3>Време</h3>
+    <table id="proposed-times-table" border="1">
+        <thead>
+            <tr>
+                <th>Day/Month</th>
+                <th>Time</th>
+                <th>Contact</th>
+                <th>Info</th>
+            </tr>
+        </thead>
+        <tbody id="proposed-times-body">
+            <!-- Proposed times will be dynamically inserted here -->
+        </tbody>
+    </table>
+</div>
+
+    <!-- Proposal Form Section -->
+    <div class="container mt-5">
+    <h2>Закажи</h2>
+    <form action="{{ url_for('submit_proposal') }}" method="POST">
+        <div class="mb-3">
+            <label for="name" class="form-label">Име</label>
+            <input type="text" class="form-control" id="name" name="name" required>
+        </div>
+        <div class="mb-3">
+            <label for="phone" class="form-label">Број</label>
+            <input type="tel" class="form-control" id="phone" name="phone" required>
+        </div>
+        <div class="mb-3">
+            <label for="time_slot" class="form-label">Време</label>
+            <input type="text" class="form-control" id="time_slot" name="time_slot" required placeholder="HH:MM">
+        </div>
+
+        <!-- Hidden fields for day, month, and year -->
+        <input type="visible" id="day" name="day">
+        <input type="visible" id="month" name="month">
+        <input type="visible" id="year" name="year" value="2025">  <!-- Hardcoded year -->
+
+        <button type="submit" class="btn btn-primary">Закажи</button>
+    </form>
+</div>
+
+<iframe src="https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d1910.2521782693807!2d22.43074470803157!3d41.92074995208787!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x13558d6b6c51a0ff%3A0x12ac6af77b71b632!2sBerber%20Nenad!5e1!3m2!1smk!2smk!4v1739123518357!5m2!1smk!2smk" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+
+
+    <script>
+        fetch('/is_admin')
+            .then(response => response.json())
+        .then(data => {
+            console.log("Admin status "+data.is_admin)
+            let adminElements = document.querySelectorAll('.isAdmin');
+            if (data.is_admin) {
+                adminElements.forEach(el => el.style.display = 'block');
+            } else {
+                adminElements.forEach(el => el.style.display = 'none');
+            }
+        });
+
+function updateDate(date) {
+        let url = `/date?date=${date.toISOString().split('T')[0]}`;
+        window.location.href = url;  // Navigate to the new date
+    }
+    //TUKA E BOOKING DATA
+        let bookingData = {{ data | tojson | safe }};
+
+fetch('/is_admin')
+    .then(response => response.json())
+    .then(data => {
+        console.log("Admin status: " + data.is_admin);
+        let adminElements = document.querySelectorAll('.isAdmin');
+        let proposedContainer = document.getElementById('proposed-times-container');
+
+        if (data.is_admin) {
+            adminElements.forEach(el => el.style.display = 'block');
+            proposedContainer.style.display = 'block'; // Show table for admin
+
+            fetch('/get_proposals')
+                .then(response => response.json())
+                .then(proposals => {
+                    console.log("Awaiting proposals:", proposals);
+                    let tbody = document.getElementById('proposed-times-body');
+                    tbody.innerHTML = ""; // Clear previous entries
+
+                    if (proposals.length > 0) {
+                        proposals.forEach(proposal => {
+                            let row = document.createElement('tr');
+                            row.innerHTML = `
+                                <td>${proposal.den}/${proposal.mesec}</td>
+                                <td>${proposal.pocetok.slice(0,5)}</td>
+                                <td>${proposal.kontakt}</td>
+                                <td>${proposal.info}</td>
+                                <td>
+                                    <button class="confirm-btn btn btn-success" data-id="${proposal.slot_id}">Потврди</button>
+                                    <button class="deny-btn btn btn-danger" data-id="${proposal.slot_id}">Одбиј</button>
+                                </td>
+                            `;
+                            tbody.appendChild(row);
+                        });
+
+                        // Add event listeners for Confirm/Deny buttons
+                        document.querySelectorAll('.confirm-btn').forEach(button => {
+                            button.addEventListener('click', function() {
+                                updateProposalStatus(this.dataset.id, 1); 
+                            });
+                        });
+
+                        document.querySelectorAll('.deny-btn').forEach(button => {
+                            button.addEventListener('click', function() {
+                                updateProposalStatus(this.dataset.id, 3);
+                            });
+                        });
+                    }
+                })
+                .catch(error => console.error("Error fetching proposals:", error));
+
+        } else {
+            adminElements.forEach(el => el.style.display = 'none');
+            proposedContainer.style.display = 'none'; // Hide table for non-admins
+        }
+    })
+    .catch(error => console.error("Error fetching admin status:", error));
+
+function updateProposalStatus(slotId, newStatus) {
+    fetch('/update_proposal', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ slot_id: slotId, status: newStatus })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            console.log(`Slot ${slotId} updated to status ${newStatus}`);
+            location.reload(); // Refresh to update UI
+        } else {
+            console.error("Error updating proposal:", data.error);
+        }
+    })
+    .catch(error => console.error("Request failed:", error));
+}
+
+
+        let currentStartDate = new Date();
+
+        const urlParams = new URLSearchParams(window.location.search);
+        const dateParam = urlParams.get('date');
+        if (dateParam) {
+            currentStartDate = new Date(dateParam);
+        }
+
+        function formatDate(date) {
+            let day = date.getDate().toString().padStart(2, '0');
+            let month = (date.getMonth() + 1).toString().padStart(2, '0');
+            let year = date.getFullYear();
+            return `${day}/${month}/${year}`;  // Adjusted to DD/MM/YYYY format
+        }
+
+
+        function updateWeekDisplay() {
+            let days = [];
+            for (let i = 0; i < 7; i++) {
+                let nextDay = new Date(currentStartDate);
+                nextDay.setDate(currentStartDate.getDate() + i);
+                days.push(nextDay);
+            }
+
+            let dayElements = [
+                document.getElementById('day1'),
+                document.getElementById('day2'),
+                document.getElementById('day3'),
+                document.getElementById('day4'),
+                document.getElementById('day5'),
+                document.getElementById('day6'),
+                document.getElementById('day7')
+            ];
+
+            days.forEach((date, index) => {
+                if (dayElements[index]) {
+                    dayElements[index].innerText = formatDate(date);
+                }
+            });
+
+            markOccupiedSlots(days);
+        }
+
+        function markOccupiedSlots(days){
+    let timeSlots = ["08:00", "09:00", "10:00", "11:00", "12:00", "13:00", "14:00", "15:00", "16:00", "17:00", "18:00", "19:00"];
+    let tableRows = document.querySelectorAll("tbody tr");
+
+    // Clear any previous status classes
+    document.querySelectorAll("tbody td").forEach(td => td.classList.remove("occupied", "awaiting"));
+
+    // Loop through each booking and mark the cells based on status
+    bookingData.forEach(booking => {
+        let dateStr = formatDate(new Date(booking.godina, booking.mesec - 1, booking.den));
+        let pocetokNormalized = booking.pocetok.slice(0, 5);
+
+        days.forEach((date, dayIndex) => {
+            if(formatDate(date) === dateStr) {
+                let slotIndex = timeSlots.indexOf(pocetokNormalized);
+                if(slotIndex !== -1) {
+                    let row = tableRows[slotIndex];
+                    let cell = row.children[dayIndex + 1];
+                    if(cell){
+                        // Apply class based on status
+                        if(booking.status === 1) {
+                            cell.classList.add("occupied");
+                        } else if(booking.status === 0) {
+                            cell.classList.add("awaiting");
+                        }
+                    }
+                }
+            }
+        });
+    });
+}
+
+        let selectedTime = null;
+        let selectedDate = null;
+
+        document.querySelectorAll('tbody td').forEach(cell => {
+    cell.addEventListener('click', function() {
+        if (!this.classList.contains('occupied') && !this.classList.contains('awaiting')) {//TUKA ZA U EDEN SLOT POVEKJE PREDLOZI:  && !this.classList.contains('awaiting')
+            document.querySelectorAll('tbody td').forEach(td => td.classList.remove('selected'));
+            this.classList.add('selected');
+            selectedTime = this.parentElement.children[0].textContent;
+    
+            // Find the corresponding date for the clicked cell
+            let dateCells = this.closest('table').querySelectorAll('th');
+            let dayHeader = dateCells[this.cellIndex];  // Get the corresponding header
+            let headerText = dayHeader.textContent.trim();
+            let [day, month, year] = headerText.split('/').map(num => parseInt(num, 10));
+
+            // Construct the Date object using the extracted day, month, and year
+            selectedDate = new Date(year, month - 1, day);  // Month is zero-indexed (January is 0)
+
+            console.log(`Selected Date: ${selectedDate}`);
+            console.log(`Selected Time: ${selectedTime}`);
+
+            // Ensure valid date
+            if (!selectedDate || isNaN(selectedDate)) {
+                console.error("Invalid date selection");
+                return;
+            }
+
+            // Format the date as DD/MM/YYYY
+            let formattedDate = `${selectedDate.getDate().toString().padStart(2, '0')}/${(selectedDate.getMonth() + 1).toString().padStart(2, '0')}/${selectedDate.getFullYear()}`;
+
+            // Set the values for submission
+            document.getElementById('time_slot').value = selectedTime;
+            document.getElementById('day').value = selectedDate.getDate();  // DD
+            document.getElementById('month').value = selectedDate.getMonth() + 1;  // MM (1-based for submission)
+            document.getElementById('year').value = selectedDate.getFullYear();  // YYYY
+
+            // Display the formatted date (DD/MM/YYYY) if needed
+            console.log(`Formatted Date: ${formattedDate}`);
+        }
+    });
+});
+
+document.getElementById('prevWeek').addEventListener('click', () => {
+    currentStartDate.setDate(currentStartDate.getDate() - 7);
+    updateDate(currentStartDate); // Pass the updated date
+    updateWeekDisplay(); // Update display based on the new date
+});
+
+document.getElementById('nextWeek').addEventListener('click', () => {
+    currentStartDate.setDate(currentStartDate.getDate() + 7);
+    updateDate(currentStartDate); // Pass the updated date
+    updateWeekDisplay(); // Update display based on the new date
+});
+
+
+        updateWeekDisplay();
+    </script>
+</body>
+</html>
