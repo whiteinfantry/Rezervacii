@@ -244,6 +244,8 @@ def logirajSe():
 
     return render_template('login.html') 
 
+
+
 @app.route('/admin_dashboard')
 def admin_dashboard():
     if not session.get('admin_logged_in'):
