@@ -153,7 +153,7 @@ h3 {
 
 
     }
-    #ZakaziKopce{
+    .ZakaziKopce{
         padding:4px;
         color:white;
         background-color: #000;
@@ -166,11 +166,36 @@ h3 {
         display:flex;
         flex-direction: row;
     }
+    .PopUpZakazi > *{
+      width:75%;
+      margin:auto;
+      text-align:center;
+    }
+
+    .PopUpZakazi{
+      width: clamp(320px,400px, 90%);
+      padding: 1rem;
+      background: #fff;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+      background-color:white;
+      z-index:5;
+      position:absolute;
+      top: 75%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      border: 1px solid black;
+
+      opacity:0;
+
+      transition: all 1s;
+    }
+
     </style>
 
 
 </head>
-<body >
+<body onload="staviKlikovi()">
 <div class=wrapper>
 <div class="calendar">
       <header>
@@ -209,8 +234,28 @@ h3 {
             <li data-time="18:00">18:00</li>
             <li data-time="19:00">19:00</li>
             <br />
-            <li><button id="ZakaziKopce">Закажи</button></li>
+            <li><button class="ZakaziKopce" onclick="prvPopUp()">Закажи</button></li>
         </ul>
+    </div>
+
+    <div class="PopUpZakazi" id="PopUpZakaziId">
+      <form action="{{ url_for('submit_proposal') }}" method="POST">
+      <label for="name">Име и Презиме</label><br>
+      <input type="text" id="name" name="name" value="" required><br>
+      <label for="phone">Тел. бр.</label><br>
+      <input type="text" id="phone" name="phone" value="" required><br><br>
+
+      <input type="hidden" id="time_slot" name="time_slot" value="00:00">
+        
+      <input type="hidden" id="day" name="day">
+      <input type="hidden" id="month" name="month">
+      <input type="hidden" id="year" name="year"> 
+
+      <input type="submit" class="ZakaziKopce" value="Закажи">
+
+      </form> </div>
+
+
     </div>
 </div>
     <script>
@@ -236,6 +281,8 @@ h3 {
         let date = new Date();
         let month = date.getMonth();
         let year = date.getFullYear();
+        let selektiranDen = date.getDate();
+        let currentDay = date.getDate();
 
         function renderCalendar() {
         // first day of the month
@@ -289,41 +336,75 @@ h3 {
          year = date.getFullYear();
          month = date.getMonth();
 
+
+
             renderCalendar();
+            staviKlikovi();
         });
         });
 
 
 
         renderCalendar();
+        staviKlikovi();
 
-        document.querySelectorAll('.dates li').forEach(day => {
-        day.onclick = function() {
-            let selektiranDen = day.textContent;
-            console.log("Baram za "+(month+1) + " " + selektiranDen + " " + year)
+        function prvPopUp(){
+          console.log("Vreme e ", vreme)
+          document.getElementById("PopUpZakaziId").style.opacity = 1;
+          document.getElementById("PopUpZakaziId").style.top = 50+"%";
+        }
 
-            fetch(`/getAvailableSlots?month=${month+1}&day=${selektiranDen}&year=${year}`)
+        function staviKlikovi(){
+
+          document.querySelectorAll('.dates li').forEach(day => {
+            day.onclick = function() {
+              selektiranDen = day.textContent;
+              console.log("Baram za "+(month+1) + " " + selektiranDen + " " + year)
+              //TUKA DODELUVAM
+              document.getElementById("day").value = selektiranDen;
+              document.getElementById("month").value = (month+1);
+              document.getElementById("year").value = year;
+
+              fetch(`/getAvailableSlots?month=${month+1}&day=${selektiranDen}&year=${year}`)
                 .then(response => response.json())
                 .then(data => {
                 console.log(data); //TUKA TRGAM VREMINJATA ZAFANANI
 
-                let listItemi = document.querySelectorAll(".termini ul li");
-                listItemi.forEach(function(li){
-                    let time = li.textContent.trim();
-                    if(data.includes(time)){
-                        li.style.display = "none";
-                    }else{
-                        li.style.display="block";
+              let listItemi = document.querySelectorAll(".termini ul li");
+              listItemi.forEach(function(li){
+
+                let time = li.textContent.trim();
+                if(data.includes(time)){
+                  li.style.display = "none";
+                        //li.style.backgroundColor = "red";
+                  }else{
+                    li.style.display="block";
+
+                    li.onclick = function(){
+                      if(li.getAttribute("data-time") != null){
+                        vreme = li.getAttribute("data-time")
+                        document.getElementById("time_slot").value = vreme
+                        console.log("IZBRA ", vreme)
+                      }
+                      
+                    }
+                        //li.style.backgroundColor = "white";
                     }
                 });
 
 
-                })
+              })
             .catch(error => console.error('Error:', error));
         };
 
             document.querySelector(".termini").style.display = "block";
+            if (parseInt(day.textContent.trim()) === currentDay) {
+            day.click();
+            }
+
         });
+        }
+        
 
 
 

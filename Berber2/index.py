@@ -125,15 +125,17 @@ def get_available_slots():
 
 @app.route('/submit_proposal', methods=['POST'])
 def submit_proposal():
+    print("AAAAAAAAAAAAAAAAA")
     name = request.form.get('name')
     phone = request.form.get('phone')
     time_slot = request.form.get('time_slot') 
     day = request.form.get('day')
     month = request.form.get('month')
     year = request.form.get('year')  # hardkodirano 2025
-
+    print(f"{name}, {phone}, {time_slot}, {day}, {month}, {year}")
     if not name or not phone or not time_slot or not day or not month or not year:
-        return render_template('index.html', data=data, sent="failure")
+        print("NEBIVA")
+        return render_template('index.html', sent="failure")
 
     day = int(day)
     month = int(month)
