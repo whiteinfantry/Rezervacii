@@ -60,6 +60,7 @@ h3 {
   display: flex;
   align-items: center;
   justify-content: center;
+
 }
 #prev,
 #next {
@@ -72,6 +73,7 @@ h3 {
 }
 #prev::before,
 #next::before {
+
   content: "";
   width: 50%;
   height: 50%;
@@ -93,6 +95,7 @@ h3 {
   border-color: #000;
 }
 .days {
+
   font-weight: 600;
 }
 .dates li.today {
@@ -125,16 +128,16 @@ h3 {
 
 }
 
-    .termini {
-        margin: 0 auto;
-        width: clamp(80px, 100px, 90%);
-        padding: 1rem;
-        background: #fff;
-        border-radius: 10px;
-        box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+.termini {
 
-        display:none;
-    }
+    margin: 0 auto;
+    width: clamp(80px, 100px, 90%);
+    padding: 1rem;
+    background: #fff;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+    display:none;
+}
 
     .termini ul{
         list-style: none;
@@ -148,7 +151,7 @@ h3 {
     .termini ul li:hover{
         color:white;
         transition:all 0.5s;
-        background-color:#00F;
+        background-color:#005;
         border-radius:25%;
 
 
@@ -179,7 +182,7 @@ h3 {
       border-radius: 10px;
       box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
       background-color:white;
-      z-index:5;
+      z-index:-1;
       position:absolute;
       top: 75%;
       left: 50%;
@@ -351,6 +354,7 @@ h3 {
         function prvPopUp(){
           console.log("Vreme e ", vreme)
           document.getElementById("PopUpZakaziId").style.opacity = 1;
+          document.getElementById("PopUpZakaziId").style.zIndex = 5;
           document.getElementById("PopUpZakaziId").style.top = 50+"%";
         }
 
