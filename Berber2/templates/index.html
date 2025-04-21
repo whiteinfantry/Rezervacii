@@ -94,9 +94,15 @@ h3 {
 #next:hover::before {
   border-color: #000;
 }
-.days {
+.days li::before {
+  content: attr(data-full);
+  display: inline;
+}
 
-  font-weight: 600;
+@media (max-width: 750px) {
+  .days li::before {
+    content: attr(data-short);
+  }
 }
 .dates li.today {
   color: #fff;
@@ -194,11 +200,44 @@ h3 {
       transition: all 1s;
     }
 
+    .statusReport{
+      position:absolute;
+      width:50%;
+      margin:auto;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      top:10%;
+      text-align: center;
+      padding: 1rem;
+      background: #fff;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+      z-index:6;
+
+
+
+
+      }
+/*alert alert-{{ category }} alert-dismissible fade show*/
     </style>
 
 
 </head>
 <body onload="staviKlikovi()">
+
+  {% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+    <div class="container mt-3">
+      {% for category, message in messages %}
+        <div class="statusReport" role="alert">
+          {{ message }}
+        </div>
+      {% endfor %}
+    </div>
+  {% endif %}
+{% endwith %}
+
+
 <div class=wrapper>
 <div class="calendar">
       <header>
@@ -210,13 +249,13 @@ h3 {
       </header>
       <section>
         <ul class="days">
-          <li>Sun</li>
-          <li>Mon</li>
-          <li>Tue</li>
-          <li>Wed</li>
-          <li>Thu</li>
-          <li>Fri</li>
-          <li>Sat</li>
+          <li data-full="Sun" data-short="S"></li>
+          <li data-full="Mon" data-short="M"></li>
+          <li data-full="Tue" data-short="T"></li>
+          <li data-full="Wed" data-short="W"></li>
+          <li data-full="Thu" data-short="T"></li>
+          <li data-full="Fri" data-short="F"></li>
+          <li data-full="Sat" data-short="S"></li>
         </ul>
         <ul class="dates"></ul>
       </section>

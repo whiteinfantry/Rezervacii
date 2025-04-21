@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, url_for, session, jsonify
+from flask import Flask, render_template, request, redirect, url_for, session, jsonify, flash
 import MySQLdb
 from datetime import datetime, timedelta
 
@@ -134,7 +134,8 @@ def submit_proposal():
     year = request.form.get('year')  # hardkodirano 2025
     print(f"{name}, {phone}, {time_slot}, {day}, {month}, {year}")
     if not name or not phone or not time_slot or not day or not month or not year:
-        print("NEBIVA")
+        #TUKA NEUSPESNO
+        flash("Неуспешно!", "danger")
         return render_template('index.html', sent="failure")
 
     day = int(day)
@@ -152,7 +153,8 @@ def submit_proposal():
     cursor.execute(query, (day, month, year, time_slot, phone, name, 0))
     db.commit()
     db.close()
-
+    #TUKA USPESNO
+    flash(f"Закажано! Се гледаме на {day}.{month}.{year} во {time_slot} часот!", "success")
     return redirect(url_for('home'))
 
 @app.route('/get_proposals', methods=['GET'])
