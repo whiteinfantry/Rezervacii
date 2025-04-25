@@ -4,222 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Систем за резервации</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
-    <style>
-@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap");
-
-* {
-  padding: 0;
-  margin: 0;
-  box-sizing: border-box;
-}
-body {
-  display: flex;
-  flex-direction: column;
-  height: 100vh;
-  font-family: Poppins, sans-serif;
-  background: linear-gradient(to bottom, #ff5e88, #ff9966);
-}
-h1 {
-  font-weight: 600;
-  text-align: center;
-  color: #fff;
-  margin-block: 2rem;
-}
-h3 {
-  font-weight: 600;
-}
-.calendar {
-  margin: 0 auto;
-  width: clamp(320px, 400px, 90%);
-  padding: 1rem;
-  background: #fff;
-  border-radius: 10px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
-}
-.calendar header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-.calendar nav {
-  display: flex;
-  align-items: center;
-}
-.calendar ul {
-  list-style: none;
-  display: flex;
-  flex-wrap: wrap;
-  text-align: center;
-}
-.calendar ul li {
-  width: calc(100% / 7);
-  position: relative;
-  z-index: 2;
-  aspect-ratio: 1;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-}
-#prev,
-#next {
-  width: 20px;
-  height: 20px;
-  position: relative;
-  border: none;
-  background: transparent;
-  cursor: pointer;
-}
-#prev::before,
-#next::before {
-
-  content: "";
-  width: 50%;
-  height: 50%;
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  border-style: solid;
-  border-width: 0.25em 0.25em 0 0;
-  border-color: #ccc;
-}
-#next::before {
-  transform: translate(-50%, -50%) rotate(45deg);
-}
-#prev::before {
-  transform: translate(-50%, -50%) rotate(-135deg);
-}
-#prev:hover::before,
-#next:hover::before {
-  border-color: #000;
-}
-.days li::before {
-  content: attr(data-full);
-  display: inline;
-}
-
-@media (max-width: 750px) {
-  .days li::before {
-    content: attr(data-short);
-  }
-}
-.dates li.today {
-  color: #fff;
-}
-.dates li.today::before {
-  content: "";
-  width: 2rem;
-  height: 2rem;
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  background: #000;
-  border-radius: 50%;
-  z-index: -1;
-}
-.dates li.inactive {
-  color: #ccc;
-}
-.dates li{
-
-    border-radius:50%;
-    transition:all 0.5s;
-}
-.dates li:hover:not(.inactive){
-    background-color: #005;
-    border-radius:50%;
-    color:white;
-
-}
-
-.termini {
-
-    margin: 0 auto;
-    width: clamp(80px, 100px, 90%);
-    padding: 1rem;
-    background: #fff;
-    border-radius: 10px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
-    display:none;
-}
-
-    .termini ul{
-        list-style: none;
-        padding:0;
-        margin:0;
-        text-align:center;
-        width:100%;
-        
-    }
-
-    .termini ul li:hover{
-        color:white;
-        transition:all 0.5s;
-        background-color:#005;
-        border-radius:25%;
-
-
-    }
-    .ZakaziKopce{
-        padding:4px;
-        color:white;
-        background-color: #000;
-        border: none;
-        border-radius:25%;
-    }
-    .wrapper{
-        width:75%;
-        margin:auto;
-        display:flex;
-        flex-direction: row;
-    }
-    .PopUpZakazi > *{
-      width:75%;
-      margin:auto;
-      text-align:center;
-    }
-
-    .PopUpZakazi{
-      width: clamp(320px,400px, 90%);
-      padding: 1rem;
-      background: #fff;
-      border-radius: 10px;
-      box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
-      background-color:white;
-      z-index:-1;
-      position:absolute;
-      top: 75%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      border: 1px solid black;
-
-      opacity:0;
-
-      transition: all 1s;
-    }
-
-    .statusReport{
-      position:absolute;
-      width:50%;
-      margin:auto;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      top:10%;
-      text-align: center;
-      padding: 1rem;
-      background: #fff;
-      border-radius: 10px;
-      box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
-      z-index:6;
-
-
-
-
-      }
-/*alert alert-{{ category }} alert-dismissible fade show*/
-    </style>
+<!--     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"> -->
+<link rel="stylesheet" href="{{ url_for('static', filename='styles.css')}}">
 
 
 </head>
@@ -237,7 +23,7 @@ h3 {
   {% endif %}
 {% endwith %}
 
-
+<div class="firstRow">
 <div class=wrapper>
 <div class="calendar">
       <header>
@@ -296,10 +82,17 @@ h3 {
       <input type="submit" class="ZakaziKopce" value="Закажи">
 
       </form> </div>
-
-
     </div>
 </div>
+</div>
+
+
+<div class="mapaDiv">
+
+<p id="Naslov">Бербер Еден</p>
+<iframe src="https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d1910.2521782693807!2d22.43074470803157!3d41.92074995208787!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x13558d6b6c51a0ff%3A0x12ac6af77b71b632!2sBerber%20Nenad!5e1!3m2!1smk!2smk!4v1739123518357!5m2!1smk!2smk" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade" id="mapa"></iframe>
+</div> 
+
     <script>
         const header = document.querySelector(".calendar h3");
         const dates = document.querySelector(".dates");
@@ -447,6 +240,31 @@ h3 {
 
         });
         }
+        
+        //DO TUKA E KAENDARO NADOLE E MAPATA
+        function isElementInViewport(el) {
+        const rect = el.getBoundingClientRect();
+        return (
+          rect.top >= 0 &&
+          rect.left >= 0 &&
+          rect.bottom <= (window.innerHeight || document.documentElement.clientHeight)      &&
+          rect.right <= (window.innerWidth || document.documentElement.clientWidth)
+        );
+      }
+
+
+      const naslov = document.getElementById('Naslov');
+
+// SKROL PREVIRUVAM TUKA
+      function checkVisibility() {
+        if (isElementInViewport(naslov)) {
+          naslov.style.opacity = '1';
+        }
+      }
+
+      window.addEventListener('scroll', checkVisibility);
+
+      checkVisibility();
         
 
 
